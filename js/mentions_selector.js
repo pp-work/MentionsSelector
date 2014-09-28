@@ -231,6 +231,11 @@
             mentionsList.style.top = textareaPosition.top + caretPosition.top + 30 + 'px';
             mentionsList.style.left = textareaPosition.left + caretPosition.left + 'px';
             mentionsList.style.position = 'fixed';
+
+            // Move back if out of screen
+            if (parseInt(mentionsList.style.left) + mentionsList.offsetWidth > $(window).width()) {
+                mentionsList.style.left = $(window).width() - mentionsList.offsetWidth  + 'px';
+            }
         }
 
         /**
