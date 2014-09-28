@@ -13,6 +13,7 @@
             document.body.appendChild(mentionsList);
 
             var previousMention;
+            var shouldPropose = true;
             var $textarea = $('textarea.TextBox');
             textarea = $textarea.get(0);
 
@@ -28,6 +29,10 @@
                         }
                         return;
                     case 17: // ctrl
+                        return;
+                    case 27: // escape
+                        shouldPropose = false;
+                        discardMentions();
                         return;
                     case 38: // up
                         if (typingMention && previousMention) {
@@ -51,12 +56,13 @@
                 window.setTimeout(function() {
                     var mention = getMention(e.target.value, e.target.selectionStart);
                     if (mention) {
-                        if (mention != previousMention) {
+                        if (mention != previousMention && shouldPropose) {
                             previousMention = mention;
                             typingMention = true;
                             getProposals(mention);
                         }
                     } else {
+                        shouldPropose = true;
                         discardMentions();
                     }
                 }, 0);
