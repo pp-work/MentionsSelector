@@ -48,16 +48,18 @@
             });
 
             $textarea.on('keypress', function(e) {
-                var mention = getMention(e.target.value, e.target.selectionStart);
-                if (mention) {
-                    if (mention != previousMention) {
-                        previousMention = mention;
-                        typingMention = true;
-                        getProposals(mention);
+                window.setTimeout(function() {
+                    var mention = getMention(e.target.value, e.target.selectionStart);
+                    if (mention) {
+                        if (mention != previousMention) {
+                            previousMention = mention;
+                            typingMention = true;
+                            getProposals(mention);
+                        }
+                    } else {
+                        discardMentions();
                     }
-                } else {
-                    discardMentions();
-                }
+                }, 0);
             });
 
             $(mentionsList).on('click', 'li', function(e) {
