@@ -22,10 +22,12 @@
                         $textarea.keypress();
                         return;
                     case 10:
-                    case 13: //enter
+                    case 13: // enter
                         if (typingMention && previousMention && acceptProposal(e.ctrlKey)) {
                             e.preventDefault();
                         }
+                        return;
+                    case 17: // ctrl
                         return;
                     case 38: // up
                         if (typingMention && previousMention) {
