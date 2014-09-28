@@ -18,19 +18,22 @@
 
             $textarea.on('keydown', function(e) {
                 switch (e.keyCode) {
+                    case 8: // backspace
+                        $textarea.keypress();
+                        return;
                     case 10:
-                    case 13:
+                    case 13: //enter
                         if (typingMention && previousMention && selectMention(e.ctrlKey)) {
                             e.preventDefault();
                         }
                         return;
-                    case 38:
+                    case 38: // up
                         if (typingMention && previousMention) {
                             e.preventDefault();
                             moveUp();
                         }
                         return;
-                    case 40:
+                    case 40: // down
                         if (typingMention && previousMention) {
                             e.preventDefault();
                             moveDown();
