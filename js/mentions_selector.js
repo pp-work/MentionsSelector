@@ -69,7 +69,7 @@
             });
 
             $(mentionsList).on('click', 'li', function(e) {
-                replaceMention(e.target.textContent);
+                replaceMention(e.currentTarget.textContent);
                 textarea.focus();
             });
         }
