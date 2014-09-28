@@ -54,6 +54,10 @@
                     discardMentions();
                 }
             });
+
+            $(mentionsList).on('click', 'li', function(e) {
+                replaceMention(e.target.textContent);
+            });
         }
 
         /**
