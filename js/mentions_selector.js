@@ -23,7 +23,7 @@
                         return;
                     case 10:
                     case 13: //enter
-                        if (typingMention && previousMention && selectMention(e.ctrlKey)) {
+                        if (typingMention && previousMention && acceptProposal(e.ctrlKey)) {
                             e.preventDefault();
                         }
                         return;
@@ -51,7 +51,7 @@
                     if (mention != previousMention) {
                         previousMention = mention;
                         typingMention = true;
-                        getUsernames(mention);
+                        getProposals(mention);
                     }
                 } else {
                     discardMentions();
@@ -61,6 +61,28 @@
             $(mentionsList).on('click', 'li', function(e) {
                 replaceMention(e.target.textContent);
             });
+        }
+
+        /**
+         * Accept the currently selected proposal
+         *
+         * @param {boolean} force Take the first if none are selected
+         * @returns {boolean} true if a proposal was inserted
+         */
+        function acceptProposal(force) {
+            if (mentionsList.childNodes.length > 0) {
+                var index = $(mentionsList).find('.Active').index();
+
+                if (index >= 0 || force) {
+                    if (force) {
+                        index = 0;
+                    }
+
+                    return replaceMention(mentionsList.childNodes[index].textContent);
+                }
+            }
+
+            return false;
         }
 
         /**
@@ -107,11 +129,11 @@
         }
 
         /**
-         * Get all usernames matching mention
+         * Get all proposed usernames matching mention
          *
          * @param {string} mention
          */
-        function getUsernames(mention) {
+        function getProposals(mention) {
             $.get(gdn.url('/dashboard/user/autocomplete/'), {
                     'q': mention,
                     'limit': 10,
@@ -124,16 +146,17 @@
                         usernames.pop(); // Remove last item if it's empty
                     }
 
-                    renderMentions(mention, usernames);
+                    renderProposals(mention, usernames);
                 }
             );
         }
 
-        function getPosition() {
-            var range = textarea.createRange();
-            return {'x': range.clientX, 'y': range.clientY};
-        }
-
+        /**
+         * Move the selection
+         * Goes down on positive length, up on negative
+         *
+         * @param {int} length
+         */
         function move(length) {
             if (mentionsList.childNodes.length > 0) {
                 var index = $(mentionsList).find('.Active').index();
@@ -155,21 +178,27 @@
             }
         }
 
+        /**
+         * Move the selection on step down
+         */
         function moveDown() {
             move(1);
         }
 
+        /**
+         * Move the selection on step up
+         */
         function moveUp() {
             move(-1);
         }
 
         /**
-         * Render the mention selection list
+         * Render the proposal selection list
          *
          * @param {string} mention
          * @param {Array<string>} usernames
          */
-        function renderMentions(mention, usernames) {
+        function renderProposals(mention, usernames) {
             mentionsList.innerHTML = '';
 
             for (var i = 0; i < usernames.length; i++) {
@@ -192,7 +221,13 @@
             mentionsList.style.position = 'fixed';
         }
 
-        function replaceMention(mention) {
+        /**
+         * Replace the currently typed mention with proposal
+         *
+         * @param {string} proposal
+         * @returns {boolean}
+         */
+        function replaceMention(proposal) {
             var caretPosition = textarea.selectionStart;
 
             var beforeCaret = textarea.value.substring(0, caretPosition);
@@ -207,7 +242,7 @@
             if (searchString.length > MAX_USERNAME_LENGTH) {
                 return false;
             }
-            var replacement = searchString.replace(MENTION_REPLACE_REGEX, '@' + mention + ' ');
+            var replacement = searchString.replace(MENTION_REPLACE_REGEX, '@' + proposal + ' ');
             var updatedBeforeCaret = beforeCaret.substring(0, mentionStart) + replacement;
             var afterCaret = textarea.value.substring(caretPosition);
 
@@ -217,22 +252,6 @@
 
             discardMentions();
             return true;
-        }
-
-        function selectMention(force) {
-            if (mentionsList.childNodes.length > 0) {
-                var index = $(mentionsList).find('.Active').index();
-
-                if (index >= 0 || force) {
-                    if (force) {
-                        index = 0;
-                    }
-
-                    return replaceMention(mentionsList.childNodes[index].textContent);
-                }
-            }
-
-            return false;
         }
 
         setup();
