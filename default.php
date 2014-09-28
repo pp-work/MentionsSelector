@@ -4,7 +4,7 @@
 $PluginInfo['MentionsSelector'] = array(
    'Name' => 'MentionsSelector',
    'Description' => 'Help the user select a correct username when mentioning',
-   'Version' => '0.5',
+   'Version' => '0.6',
    'RequiredApplications' => array('Vanilla' => '2.0.18'),
    'Author' => 'Rasmus Eneman',
    'AuthorEmail' => 'rasmus@eneamn.eu',
