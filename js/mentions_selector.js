@@ -10,6 +10,7 @@
         function setup() {
             mentionsList = document.createElement('ul');
             mentionsList.className = 'MentionsList ac_results';
+            mentionsList.style.position = 'fixed';
             document.body.appendChild(mentionsList);
 
             var previousMention;
@@ -153,7 +154,7 @@
                 function(data){
                     var usernames = data.split(/\|\d+\n/); // Remove id and spilt names into an array
 
-                    if (usernames.length > 1 && !usernames[usernames.length-1]) {
+                    if (usernames.length >= 1 && !usernames[usernames.length-1]) {
                         usernames.pop(); // Remove last item if it's empty
                     }
 
@@ -225,16 +226,20 @@
                 mentionsList.appendChild(listItem);
             }
 
-            var caretPosition = getCaretCoordinatesFn(textarea, textarea.selectionEnd);
-            var textareaPosition = textarea.getBoundingClientRect();
-            mentionsList.style.display = 'block';
-            mentionsList.style.top = textareaPosition.top + caretPosition.top + 30 + 'px';
-            mentionsList.style.left = textareaPosition.left + caretPosition.left + 'px';
-            mentionsList.style.position = 'fixed';
+            if (usernames.length > 0) {
+                console.log(usernames.length);
+                var caretPosition = getCaretCoordinatesFn(textarea, textarea.selectionEnd);
+                var textareaPosition = textarea.getBoundingClientRect();
+                mentionsList.style.display = 'block';
+                mentionsList.style.top = textareaPosition.top + caretPosition.top + 30 + 'px';
+                mentionsList.style.left = textareaPosition.left + caretPosition.left + 'px';
 
-            // Move back if out of screen
-            if (parseInt(mentionsList.style.left) + mentionsList.offsetWidth > $(window).width()) {
-                mentionsList.style.left = $(window).width() - mentionsList.offsetWidth  + 'px';
+                // Move back if out of screen
+                if (parseInt(mentionsList.style.left) + mentionsList.offsetWidth > $(window).width()) {
+                    mentionsList.style.left = $(window).width() - mentionsList.offsetWidth  + 'px';
+                }
+            } else {
+                mentionsList.style.display = 'none';
             }
         }
 
