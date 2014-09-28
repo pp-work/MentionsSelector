@@ -117,7 +117,7 @@
                         usernames.pop(); // Remove last item if it's empty
                     }
 
-                    renderMentions(usernames);
+                    renderMentions(mention, usernames);
                 }
             );
         }
@@ -159,16 +159,20 @@
         /**
          * Render the mention selection list
          *
+         * @param {string} mention
          * @param {Array<string>} usernames
          */
-        function renderMentions(usernames) {
+        function renderMentions(mention, usernames) {
             mentionsList.innerHTML = '';
 
             for (var i = 0; i < usernames.length; i++) {
-                var username = usernames[i];
+                var username = usernames[i].substring(mention.length);
 
                 var listItem = document.createElement('li');
-                listItem.textContent = username;
+                var strong = document.createElement('strong');
+                strong.textContent = mention;
+                listItem.appendChild(strong);
+                listItem.appendChild(document.createTextNode(username));
 
                 mentionsList.appendChild(listItem);
             }
