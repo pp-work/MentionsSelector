@@ -212,13 +212,14 @@
             mentionsList.innerHTML = '';
 
             for (var i = 0; i < usernames.length; i++) {
-                var username = usernames[i].substring(mention.length);
+                var written = usernames[i].substring(0, mention.length);
+                var proposed = usernames[i].substring(mention.length);
 
                 var listItem = document.createElement('li');
                 var strong = document.createElement('strong');
-                strong.textContent = mention;
+                strong.textContent = written;
                 listItem.appendChild(strong);
-                listItem.appendChild(document.createTextNode(username));
+                listItem.appendChild(document.createTextNode(proposed));
 
                 mentionsList.appendChild(listItem);
             }
